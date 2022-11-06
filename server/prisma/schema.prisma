@@ -19,9 +19,9 @@ model Pool {
   title     String
   code      String   @unique
   createdAt DateTime @default(now())
-  onwerId   String?
+  ownerId   String?
 
-  owner        User?         @relation(fields: [onwerId], references: [id])
+  owner        User?         @relation(fields: [ownerId], references: [id])
   participants Participant[]
 }
 
@@ -43,6 +43,7 @@ model User {
   email     String   @unique
   avatarUrl String?
   createdAt DateTime @default(now())
+  googleId  String?  @unique
 
   participatingAt Participant[]
   ownPools        Pool[]
@@ -66,4 +67,6 @@ model Bet {
 
   participant Participant @relation(fields: [participantId], references: [id])
   game        Game        @relation(fields: [gameId], references: [id])
+
+  @@unique([participantId, gameId])
 }
