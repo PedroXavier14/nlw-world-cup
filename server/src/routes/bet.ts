@@ -33,7 +33,7 @@ export async function betRoutes(fastify: FastifyInstance) {
       const participant = await prisma.participant.findUnique({
         where: {
           userId_poolId: {
-            poolId,
+            poolId: pollId,
             userId: request.user.sub,
           },
         },

@@ -105,7 +105,7 @@ export async function pollRoutes(fastify: FastifyInstance) {
         },
       });
 
-      return reply.status(401).send({ message: "Joined successfully to poll" });
+      return reply.status(201).send({ message: "Joined successfully to poll" });
     }
   );
 
@@ -165,7 +165,7 @@ export async function pollRoutes(fastify: FastifyInstance) {
 
       const { id } = getPollParams.parse(request.params);
 
-      const poll = await prisma.pool.findMany({
+      const poll = await prisma.pool.findUnique({
         where: {
           id,
         },

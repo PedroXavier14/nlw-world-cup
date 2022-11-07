@@ -1,11 +1,47 @@
-import { Heading, VStack, Text } from "native-base";
+import { Heading, VStack, Text, useToast } from "native-base";
 import { Header } from "../components/Header";
 
 import Logo from "../assets/logo.svg";
 import { Input } from "../components/Input";
 import { Button } from "../components/Button";
+import { useState } from "react";
+import { api } from "../services/api";
 
 export function New() {
+  const [title, setTitle] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const toast = useToast();
+
+  const handlePollCreate = async () => {
+    if (!title.trim()) {
+      return toast.show({
+        title: "Please insert a title to the poll",
+        placement: "top",
+        bgColor: "red.500",
+      });
+    }
+
+    try {
+      setIsLoading(true);
+      await api.post("/pools", { title });
+      toast.show({
+        title: "Poll created successfully",
+        placement: "top",
+        bgColor: "green.500",
+      });
+      setTitle("");
+    } catch (error) {
+      toast.show({
+        title: "Error creating new poll",
+        placement: "top",
+        bgColor: "red.500",
+      });
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <VStack flex={1} bgColor="gray.900">
       <Header title="Create new bet" />
@@ -22,9 +58,18 @@ export function New() {
           Crie seu próprio bolão da copa e {"\n"}compartilhe entre amigos!
         </Heading>
 
-        <Input marginBottom={2} placeholder="Qual nome do seu bolão?" />
+        <Input
+          marginBottom={2}
+          placeholder="Qual nome do seu bolão?"
+          onChangeText={setTitle}
+          value={title}
+        />
 
-        <Button title="Criar meu bolão" />
+        <Button
+          title="Criar meu bolão"
+          onPress={handlePollCreate}
+          isLoading={isLoading}
+        />
 
         <Text color="gray.200" fontSize="sm" textAlign="center" px={10} mt={4}>
           Após criar seu bolão, você receberá um {"\n"} código único que poderá
